@@ -6,7 +6,7 @@ public class ImprovedLineSegmentController : MonoBehaviour
 {
     [Header("线段设置")]
     public float segmentLength = 3f;     // 线段长度
-    public float segmentWidth = 0.5f;    // 线段宽度（覆盖范围）
+    public float segmentWidth = 0.1f;    // 线段宽度（覆盖范围）
     public float moveSpeed = 2f;         // 移动速度
     public float moveDistance = 10f;     // 移动距离（翻倍）
     public Color lineColor = Color.red;  // 线段颜色
@@ -81,11 +81,25 @@ public class ImprovedLineSegmentController : MonoBehaviour
                     break;
 
                 case SegmentState.Finished:
-                    // 完成后点击：重置
-                    ResetSegment();
+                    // 完成后点击：立即重置并重新开始，无冷却时间
+                    ResetAndRestartImmediately();
                     break;
             }
         }
+    }
+
+    // 新增方法：立即重置并重新开始
+    void ResetAndRestartImmediately()
+    {
+        // 重置到等待状态
+        currentState = SegmentState.Waiting;
+        segmentPosition = Vector3.zero;
+
+        // 立即创建新线段（跳过等待状态）
+        CreateSegmentAtCenter();
+        currentState = SegmentState.Placed;
+
+        Debug.Log("线段已重置，可以立即设置新方向");
     }
 
     // 在屏幕中心创建线段
@@ -225,16 +239,32 @@ public class ImprovedLineSegmentController : MonoBehaviour
     }
 
     // 转换指定位置的瓦片
+    // 转换指定位置的瓦片 - 修改为无论原地图是什么都变成新地图
     void ConvertTileAtPosition(Vector3Int cellPosition)
     {
+        // 检查所有可能的原地图瓦片，无论是什么都转换为新地图
+        bool hasAnyTile = false;
+
+        // 检查森林地图是否有瓦片
         if (forestTilemap.HasTile(cellPosition))
         {
-            desertTilemap.SetTile(cellPosition, desertTile);
+            hasAnyTile = true;
             forestTilemap.SetTile(cellPosition, null);
-
             forestTilemap.RefreshTile(cellPosition);
-            desertTilemap.RefreshTile(cellPosition);
         }
+
+        // 检查沙漠地图是否有瓦片（如果需要也可以转换）
+        if (desertTilemap.HasTile(cellPosition))
+        {
+            hasAnyTile = true;
+            // 如果希望保留沙漠瓦片，可以注释掉下面两行
+            // desertTilemap.SetTile(cellPosition, null);
+            // desertTilemap.RefreshTile(cellPosition);
+        }
+
+        // 无论原地图是什么，都设置为新地图（沙漠）
+        desertTilemap.SetTile(cellPosition, desertTile);
+        desertTilemap.RefreshTile(cellPosition);
     }
 
     // 重置线段状态
