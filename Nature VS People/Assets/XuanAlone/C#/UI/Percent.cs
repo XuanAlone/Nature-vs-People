@@ -81,10 +81,10 @@ public class TilePercentageCalculator : MonoBehaviour
             percentageSlider.value = percentage;
         }
 
-        // 更新百分比文本
+        // 更新百分比文本 - 只显示百分比
         if (percentageText != null)
         {
-            percentageText.text = $"{percentage:P1} ({tileCount}/{totalTiles})";
+            percentageText.text = $"{percentage:P1}";
         }
     }
 
@@ -114,7 +114,8 @@ public class TilePercentageCalculator : MonoBehaviour
         style.fontSize = 16;
         style.normal.textColor = Color.white;
 
+        // 调试信息也改为只显示百分比
         GUI.Label(new Rect(10, Screen.height - 30, 400, 30),
-                 $"瓦片数量: {tileCount} / {totalTiles} ({percentage:P1})", style);
+                 $"瓦片百分比: {percentage:P1}", style);
     }
 }

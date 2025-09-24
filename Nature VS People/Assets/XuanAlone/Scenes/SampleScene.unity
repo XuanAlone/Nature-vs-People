@@ -953,8 +953,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 5, y: 9.6}
-  m_SizeDelta: {x: 46.4097, y: 14.426}
+  m_AnchoredPosition: {x: 21.9, y: 21.1}
+  m_SizeDelta: {x: 70, y: 15}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &470246724
 MonoBehaviour:
@@ -976,7 +976,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: 0.0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1003,8 +1003,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 10
-  m_fontSizeBase: 10
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1321,8 +1321,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 5, y: 10.7}
-  m_SizeDelta: {x: 46.4097, y: 14.426}
+  m_AnchoredPosition: {x: 21.5, y: 19.5}
+  m_SizeDelta: {x: 70, y: 15}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &582508408
 MonoBehaviour:
@@ -1344,7 +1344,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: 0.0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1371,8 +1371,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 10
-  m_fontSizeBase: 10
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -16400,6 +16400,16 @@ Tilemap:
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
       m_AllTileFlags: 1073741825
+  - first: {x: 0, y: 0, z: 0}
+    second:
+      serializedVersion: 2
+      m_TileIndex: 1
+      m_TileSpriteIndex: 0
+      m_TileMatrixIndex: 0
+      m_TileColorIndex: 0
+      m_TileObjectToInstantiateIndex: 65535
+      dummyAlignment: 0
+      m_AllTileFlags: 1073741825
   - first: {x: 1, y: 0, z: 0}
     second:
       serializedVersion: 2
@@ -30434,15 +30444,15 @@ Tilemap:
   m_TileAssetArray:
   - m_RefCount: 0
     m_Data: {fileID: 0}
-  - m_RefCount: 2879
+  - m_RefCount: 2880
     m_Data: {fileID: 11400000, guid: 259bc7f6900f81f45af77d1bb5bf9184, type: 2}
   m_TileSpriteArray:
-  - m_RefCount: 2879
+  - m_RefCount: 2880
     m_Data: {fileID: 226004958, guid: 967483cf418cf66499917447dc3fb232, type: 3}
   - m_RefCount: 0
     m_Data: {fileID: 0}
   m_TileMatrixArray:
-  - m_RefCount: 2879
+  - m_RefCount: 2880
     m_Data:
       e00: 1
       e01: 0
@@ -30461,7 +30471,7 @@ Tilemap:
       e32: 0
       e33: 1
   m_TileColorArray:
-  - m_RefCount: 2879
+  - m_RefCount: 2880
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
@@ -30967,10 +30977,10 @@ MonoBehaviour:
   moveSpeed: 3
   moveDistance: 12
   lineColor: {r: 1, g: 0, b: 0, a: 1}
-  forestTilemap: {fileID: 898947468}
-  desertTilemap: {fileID: 230805700}
-  forestTile: {fileID: 11400000, guid: 259bc7f6900f81f45af77d1bb5bf9184, type: 2}
-  desertTile: {fileID: 11400000, guid: 8dc7fe49d60d0a743b8f846c71506cf4, type: 2}
+  originalTilemap: {fileID: 898947468}
+  convertedTilemap: {fileID: 230805700}
+  originalTile: {fileID: 11400000, guid: 259bc7f6900f81f45af77d1bb5bf9184, type: 2}
+  convertedTile: {fileID: 11400000, guid: 8dc7fe49d60d0a743b8f846c71506cf4, type: 2}
   createSegmentButton: {fileID: 279590987}
 --- !u!50 &1015156754
 Rigidbody2D:
@@ -31095,8 +31105,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 5, y: 11.6}
-  m_SizeDelta: {x: 46.4097, y: 14.426}
+  m_AnchoredPosition: {x: 21.2, y: 21}
+  m_SizeDelta: {x: 70, y: 15}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1058403518
 MonoBehaviour:
@@ -31118,7 +31128,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: 0.0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -31145,8 +31155,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 10
-  m_fontSizeBase: 10
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -31382,7 +31392,7 @@ MonoBehaviour:
   targetTilemap: {fileID: 898947468}
   percentageSlider: {fileID: 1116663025}
   percentageText: {fileID: 1058403518}
-  totalTiles: 2840
+  totalTiles: 2880
   updateInterval: 0.5
 --- !u!1 &1147655567
 GameObject:
@@ -33050,7 +33060,7 @@ MonoBehaviour:
   targetTilemap: {fileID: 1716318004}
   percentageSlider: {fileID: 1863006045}
   percentageText: {fileID: 470246724}
-  totalTiles: 2840
+  totalTiles: 2880
   updateInterval: 0.5
 --- !u!1 &1924206353
 GameObject:
@@ -33403,7 +33413,7 @@ MonoBehaviour:
   targetTilemap: {fileID: 230805700}
   percentageSlider: {fileID: 2063725884}
   percentageText: {fileID: 582508408}
-  totalTiles: 2840
+  totalTiles: 2880
   updateInterval: 0.5
 --- !u!1 &2107820160
 GameObject:
