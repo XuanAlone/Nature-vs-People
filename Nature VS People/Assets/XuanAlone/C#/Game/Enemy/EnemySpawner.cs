@@ -5,7 +5,10 @@ using UnityEngine.Tilemaps;
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
+
+    [Header("生成设置")]
     public float spawnInterval = 3f;
+    public int spawnCountPerWave = 1;
     public float spawnDistanceFromEdge = 1f;
 
     [Header("瓦片地图引用（可选）")]
@@ -14,14 +17,28 @@ public class EnemySpawner : MonoBehaviour
     public TileBase originalTile;
     public TileBase convertedTile;
 
+    // 公共属性，允许其他代码访问和修改
+    public float SpawnInterval
+    {
+        get => spawnInterval;
+        set => spawnInterval = Mathf.Max(0.1f, value); // 最小间隔0.1秒
+    }
+
+    public int SpawnCountPerWave
+    {
+        get => spawnCountPerWave;
+        set => spawnCountPerWave = Mathf.Max(1, value); // 最少生成1个
+    }
+
     private Camera mainCamera;
     private float minX, maxX, minY, maxY;
+    private Coroutine spawnCoroutine;
 
     void Start()
     {
         mainCamera = Camera.main;
         CalculateSpawnBounds();
-        StartCoroutine(SpawnEnemiesRoutine());
+        StartSpawning();
     }
 
     void CalculateSpawnBounds()
@@ -39,11 +56,38 @@ public class EnemySpawner : MonoBehaviour
         Debug.Log($"敌人生成范围: X({minX:F1}, {maxX:F1}), Y({minY:F1}, {maxY:F1})");
     }
 
+    // 开始生成敌人
+    public void StartSpawning()
+    {
+        if (spawnCoroutine != null)
+            StopCoroutine(spawnCoroutine);
+
+        spawnCoroutine = StartCoroutine(SpawnEnemiesRoutine());
+    }
+
+    // 停止生成敌人
+    public void StopSpawning()
+    {
+        if (spawnCoroutine != null)
+        {
+            StopCoroutine(spawnCoroutine);
+            spawnCoroutine = null;
+        }
+    }
+
     IEnumerator SpawnEnemiesRoutine()
     {
         while (true)
         {
             yield return new WaitForSeconds(spawnInterval);
+            SpawnWave();
+        }
+    }
+
+    void SpawnWave()
+    {
+        for (int i = 0; i < spawnCountPerWave; i++)
+        {
             SpawnEnemy();
         }
     }
@@ -86,6 +130,26 @@ public class EnemySpawner : MonoBehaviour
         }
 
         return spawnPosition;
+    }
+
+    // 其他代码调用示例方法
+    public void IncreaseSpawnRate(float intervalReduction)
+    {
+        SpawnInterval -= intervalReduction;
+        Debug.Log($"生成间隔减少到: {SpawnInterval}秒");
+    }
+
+    public void IncreaseSpawnCount(int additionalCount)
+    {
+        SpawnCountPerWave += additionalCount;
+        Debug.Log($"每波生成数量增加到: {SpawnCountPerWave}个");
+    }
+
+    public void SetSpawnParameters(float newInterval, int newCount)
+    {
+        SpawnInterval = newInterval;
+        SpawnCountPerWave = newCount;
+        Debug.Log($"设置生成参数: 间隔{SpawnInterval}秒, 数量{SpawnCountPerWave}个");
     }
 
     void OnDrawGizmos()

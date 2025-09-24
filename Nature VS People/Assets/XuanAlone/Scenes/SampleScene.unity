@@ -32569,7 +32569,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 4635224121423445379, guid: ed679429acb164046b5dc9e325036a43, type: 3}
-  spawnInterval: 3
+  spawnInterval: 10
+  spawnCountPerWave: 3
   spawnDistanceFromEdge: 1
   originalTilemap: {fileID: 898947468}
   convertedTilemap: {fileID: 919912160}
