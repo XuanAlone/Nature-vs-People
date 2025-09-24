@@ -1,8 +1,8 @@
 using UnityEngine;
-using UnityEngine.Tilemaps;
 using System.Collections;
+using System.Collections.Generic;
 
-public class ImprovedLineSegmentController : MonoBehaviour
+public class AttackLineSegmentController : MonoBehaviour
 {
     [Header("线段设置")]
     public float segmentLength = 3f;     // 线段长度
@@ -10,12 +10,7 @@ public class ImprovedLineSegmentController : MonoBehaviour
     public float moveSpeed = 2f;         // 移动速度
     public float moveDistance = 10f;     // 移动距离（翻倍）
     public Color lineColor = Color.red;  // 线段颜色
-
-    [Header("地图设置")]
-    public Tilemap originalTilemap;      // 原来的瓦片地图（森林）
-    public Tilemap convertedTilemap;     // 变成的瓦片地图（沙漠）
-    public TileBase originalTile;        // 原来的瓦片（森林瓦片）
-    public TileBase convertedTile;       // 变成的瓦片（沙漠瓦片）
+    public float attackDamage = 50f;     // 攻击伤害值
 
     [Header("UI设置")]
     public UnityEngine.UI.Button createSegmentButton; // 创建线段的按钮
@@ -29,9 +24,12 @@ public class ImprovedLineSegmentController : MonoBehaviour
     private LineRenderer lineRenderer;   // 线段渲染器
     private Vector3 originalPosition;    // 起始位置
 
+    private HashSet<Enemy> damagedEnemies; // 已经受到伤害的敌人列表，避免重复伤害
+
     void Start()
     {
         InitializeLineRenderer();
+        damagedEnemies = new HashSet<Enemy>();
 
         // 绑定按钮点击事件
         if (createSegmentButton != null)
@@ -90,6 +88,7 @@ public class ImprovedLineSegmentController : MonoBehaviour
                     SetMovementDirection();
                     currentState = SegmentState.Moving;
                     originalPosition = segmentPosition; // 记录起始位置
+                    damagedEnemies.Clear(); // 清空已伤害敌人列表
                     break;
 
                 case SegmentState.Finished:
@@ -129,6 +128,7 @@ public class ImprovedLineSegmentController : MonoBehaviour
         currentState = SegmentState.Waiting;
         segmentPosition = Vector3.zero;
         lineRenderer.enabled = false;
+        damagedEnemies.Clear();
 
         //Debug.Log("线段已重置，请点击按钮创建新线段");
     }
@@ -196,8 +196,8 @@ public class ImprovedLineSegmentController : MonoBehaviour
             segmentPosition += moveDirection * moveSpeed * Time.deltaTime;
             UpdateLineVisual();
 
-            // 转换覆盖区域的瓦片
-            ConvertTilesUnderSegment();
+            // 对线段覆盖区域的敌人造成伤害
+            DamageEnemiesUnderSegment();
 
             // 检查是否移动足够远（使用翻倍的距离）
             if (Vector3.Distance(segmentPosition, originalPosition) > moveDistance)
@@ -208,8 +208,8 @@ public class ImprovedLineSegmentController : MonoBehaviour
         }
     }
 
-    // 转换线段覆盖区域下的瓦片
-    void ConvertTilesUnderSegment()
+    // 对线段覆盖区域下的敌人造成伤害
+    void DamageEnemiesUnderSegment()
     {
         // 获取线段的方向（垂直于移动方向）
         Vector3 startPoint = segmentPosition - segmentDirection * segmentLength * 0.5f;
@@ -222,40 +222,35 @@ public class ImprovedLineSegmentController : MonoBehaviour
         Vector3 corner3 = endPoint + perpendicular * segmentWidth * 0.5f;
         Vector3 corner4 = endPoint - perpendicular * segmentWidth * 0.5f;
 
-        // 计算矩形的边界
-        float minX = Mathf.Min(corner1.x, corner2.x, corner3.x, corner4.x);
-        float maxX = Mathf.Max(corner1.x, corner2.x, corner3.x, corner4.x);
-        float minY = Mathf.Min(corner1.y, corner2.y, corner3.y, corner4.y);
-        float maxY = Mathf.Max(corner1.y, corner2.y, corner3.y, corner4.y);
+        // 获取所有敌人
+        Enemy[] allEnemies = FindObjectsOfType<Enemy>();
 
-        // 将世界坐标转换为网格坐标
-        Vector3Int minCell = originalTilemap.WorldToCell(new Vector3(minX, minY, 0));
-        Vector3Int maxCell = originalTilemap.WorldToCell(new Vector3(maxX, maxY, 0));
-
-        // 遍历矩形区域内的所有网格
-        for (int x = minCell.x; x <= maxCell.x; x++)
+        foreach (Enemy enemy in allEnemies)
         {
-            for (int y = minCell.y; y <= maxCell.y; y++)
-            {
-                Vector3Int cellPos = new Vector3Int(x, y, 0);
+            // 如果敌人已经受到过伤害，跳过
+            if (damagedEnemies.Contains(enemy))
+                continue;
 
-                // 检查这个网格是否在线段覆盖的矩形内
-                if (IsCellInSegmentArea(cellPos, corner1, corner2, corner3, corner4))
-                {
-                    ConvertTileAtPosition(cellPos);
-                }
+            // 检查敌人是否在线段覆盖的矩形区域内
+            if (IsEnemyInSegmentArea(enemy.transform.position, corner1, corner2, corner3, corner4))
+            {
+                // 对敌人造成伤害
+                enemy.TakeDamage(attackDamage);
+
+                // 添加到已伤害敌人列表，避免重复伤害
+                damagedEnemies.Add(enemy);
+
+                // 可选：添加视觉反馈，如闪烁效果
+                StartCoroutine(FlashEnemy(enemy));
             }
         }
     }
 
-    // 检查网格是否在线段覆盖的矩形区域内
-    bool IsCellInSegmentArea(Vector3Int cellPos, Vector3 c1, Vector3 c2, Vector3 c3, Vector3 c4)
+    // 检查敌人是否在线段覆盖的矩形区域内
+    bool IsEnemyInSegmentArea(Vector3 enemyPos, Vector3 c1, Vector3 c2, Vector3 c3, Vector3 c4)
     {
-        // 获取网格的中心世界坐标
-        Vector3 worldPos = originalTilemap.GetCellCenterWorld(cellPos);
-
         // 使用点积法判断点是否在凸四边形内
-        return IsPointInQuadrilateral(worldPos, c1, c2, c3, c4);
+        return IsPointInQuadrilateral(enemyPos, c1, c2, c3, c4);
     }
 
     // 判断点是否在凸四边形内
@@ -285,23 +280,23 @@ public class ImprovedLineSegmentController : MonoBehaviour
         return (u >= 0) && (v >= 0) && (u + v < 1);
     }
 
-    // 转换指定位置的瓦片 - 只在原来的瓦片存在的位置上变化
-    void ConvertTileAtPosition(Vector3Int cellPosition)
+    // 敌人受到伤害时的闪烁效果
+    IEnumerator FlashEnemy(Enemy enemy)
     {
-        // 检查原来的瓦片地图是否有瓦片
-        if (originalTilemap.HasTile(cellPosition))
+        if (enemy == null) yield break;
+
+        SpriteRenderer enemyRenderer = enemy.GetComponent<SpriteRenderer>();
+        if (enemyRenderer == null) yield break;
+
+        Color originalColor = enemyRenderer.color;
+        enemyRenderer.color = Color.red;
+
+        yield return new WaitForSeconds(0.1f);
+
+        if (enemy != null && enemyRenderer != null)
         {
-            // 移除原来的瓦片
-            originalTilemap.SetTile(cellPosition, null);
-            originalTilemap.RefreshTile(cellPosition);
-
-            // 在变成的瓦片地图上设置新瓦片
-            convertedTilemap.SetTile(cellPosition, convertedTile);
-            convertedTilemap.RefreshTile(cellPosition);
-
-            //Debug.Log($"转换瓦片位置: {cellPosition}");
+            enemyRenderer.color = originalColor;
         }
-        // 如果原来的瓦片地图没有瓦片，就不做任何操作
     }
 
     // 可视化调试
@@ -354,7 +349,7 @@ public class ImprovedLineSegmentController : MonoBehaviour
                 //stateText = "状态: 已放置 - 移动鼠标旋转线段，点击屏幕设置移动方向";
                 break;
             case SegmentState.Moving:
-                //stateText = "状态: 移动中 - 线段正在转换瓦片";
+                //stateText = "状态: 移动中 - 线段正在攻击敌人";
                 break;
             case SegmentState.Finished:
                 //stateText = "状态: 已完成 - 按钮已可用，点击按钮创建新线段";
