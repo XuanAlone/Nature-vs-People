@@ -107,7 +107,7 @@ MonoBehaviour:
   convertedTilemap: {fileID: 0}
   originalTile: {fileID: 11400000, guid: 259bc7f6900f81f45af77d1bb5bf9184, type: 2}
   convertedTile: {fileID: 11400000, guid: 2ebe95e159c05ca4f9f2231bf37cb3b0, type: 2}
-  detectionRadius: 0.1
+  detectionRadius: 0.2
   spawnPadding: 1
 --- !u!58 &5103663057151938823
 CircleCollider2D:
