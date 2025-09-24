@@ -30702,7 +30702,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f621fda9e27314792e371ade9f1d2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  segmentLength: 3
+  segmentLength: 1
   segmentWidth: 0.15
   moveSpeed: 3
   moveDistance: 12
@@ -30711,6 +30711,7 @@ MonoBehaviour:
   desertTilemap: {fileID: 898947468}
   forestTile: {fileID: 11400000, guid: 259bc7f6900f81f45af77d1bb5bf9184, type: 2}
   desertTile: {fileID: 11400000, guid: 8dc7fe49d60d0a743b8f846c71506cf4, type: 2}
+  createSegmentButton: {fileID: 279590987}
 --- !u!50 &1015156754
 Rigidbody2D:
   serializedVersion: 4

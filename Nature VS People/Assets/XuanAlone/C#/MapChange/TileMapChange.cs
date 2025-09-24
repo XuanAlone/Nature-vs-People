@@ -17,6 +17,9 @@ public class ImprovedLineSegmentController : MonoBehaviour
     public TileBase forestTile;
     public TileBase desertTile;
 
+    [Header("UI设置")]
+    public UnityEngine.UI.Button createSegmentButton; // 创建线段的按钮
+
     private enum SegmentState { Waiting, Placed, Moving, Finished }
     private SegmentState currentState = SegmentState.Waiting;
 
@@ -29,15 +32,30 @@ public class ImprovedLineSegmentController : MonoBehaviour
     void Start()
     {
         InitializeLineRenderer();
+
+        // 绑定按钮点击事件
+        if (createSegmentButton != null)
+        {
+            createSegmentButton.onClick.AddListener(OnCreateSegmentButtonClicked);
+        }
     }
 
     void Update()
     {
         HandleMouseInput();
         UpdateSegment();
+
+        // 在已放置状态下，让线段跟随鼠标旋转
+        if (currentState == SegmentState.Placed)
+        {
+            UpdateSegmentDirectionToMouse();
+        }
+
+        // 根据状态更新按钮的交互性
+        UpdateButtonInteractivity();
     }
 
-    // 初始化线段渲染器 - 修复显示问题
+    // 初始化线段渲染器 - 确保线段可见
     void InitializeLineRenderer()
     {
         // 确保有LineRenderer组件
@@ -67,14 +85,8 @@ public class ImprovedLineSegmentController : MonoBehaviour
         {
             switch (currentState)
             {
-                case SegmentState.Waiting:
-                    // 第一次点击：在屏幕中心创建线段
-                    CreateSegmentAtCenter();
-                    currentState = SegmentState.Placed;
-                    break;
-
                 case SegmentState.Placed:
-                    // 第二次点击：确定移动方向
+                    // 在已放置状态下点击：确定移动方向
                     SetMovementDirection();
                     currentState = SegmentState.Moving;
                     originalPosition = segmentPosition; // 记录起始位置
@@ -88,30 +100,54 @@ public class ImprovedLineSegmentController : MonoBehaviour
         }
     }
 
-    // 新增方法：立即重置并重新开始
+    // 按钮点击事件处理
+    void OnCreateSegmentButtonClicked()
+    {
+        if (currentState == SegmentState.Waiting || currentState == SegmentState.Finished)
+        {
+            // 在屏幕中心创建线段
+            CreateSegmentAtCenter();
+            currentState = SegmentState.Placed;
+            Debug.Log("线段已创建，请移动鼠标旋转线段，然后点击屏幕设置移动方向");
+        }
+    }
+
+    // 更新按钮的交互性
+    void UpdateButtonInteractivity()
+    {
+        if (createSegmentButton != null)
+        {
+            // 在等待状态和完成状态下按钮可交互
+            createSegmentButton.interactable = (currentState == SegmentState.Waiting || currentState == SegmentState.Finished);
+        }
+    }
+
+    // 立即重置并重新开始
     void ResetAndRestartImmediately()
     {
         // 重置到等待状态
         currentState = SegmentState.Waiting;
         segmentPosition = Vector3.zero;
+        lineRenderer.enabled = false;
 
-        // 立即创建新线段（跳过等待状态）
-        CreateSegmentAtCenter();
-        currentState = SegmentState.Placed;
-
-        Debug.Log("线段已重置，可以立即设置新方向");
+        Debug.Log("线段已重置，请点击按钮创建新线段");
     }
 
-    // 在屏幕中心创建线段
+    // 在屏幕中心创建线段 - 确保线段可见
     void CreateSegmentAtCenter()
     {
         segmentPosition = Vector3.zero; // 中心点(0,0)
+
+        // 设置初始方向（例如向右）
+        segmentDirection = Vector3.right;
+        moveDirection = Vector3.up; // 默认向上移动
+
         UpdateLineVisual();
         lineRenderer.enabled = true;
     }
 
-    // 设置移动方向（垂直于鼠标方向）
-    void SetMovementDirection()
+    // 新增方法：更新线段方向以跟随鼠标
+    void UpdateSegmentDirectionToMouse()
     {
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mouseWorldPos.z = 0;
@@ -122,11 +158,22 @@ public class ImprovedLineSegmentController : MonoBehaviour
         // 线段方向与鼠标方向垂直（法线方向）
         segmentDirection = new Vector3(-directionToMouse.y, directionToMouse.x, 0);
 
-        // 移动方向与线段方向垂直（即鼠标方向）
-        moveDirection = directionToMouse;
-
         // 更新线段视觉方向
         UpdateLineVisual();
+    }
+
+    // 设置移动方向（垂直于线段方向）
+    void SetMovementDirection()
+    {
+        // 移动方向与线段方向垂直
+        // 这里我们选择与线段方向垂直的两个方向中的一个
+        // 可以根据需要选择正向或反向
+        moveDirection = new Vector3(segmentDirection.y, -segmentDirection.x, 0);
+
+        // 确保移动方向是单位向量
+        moveDirection.Normalize();
+
+        Debug.Log("移动方向已设置，线段开始移动");
     }
 
     // 更新线段视觉
@@ -156,12 +203,12 @@ public class ImprovedLineSegmentController : MonoBehaviour
             if (Vector3.Distance(segmentPosition, originalPosition) > moveDistance)
             {
                 currentState = SegmentState.Finished;
-                Debug.Log("线段移动完成");
+                Debug.Log("线段移动完成，按钮已恢复可用");
             }
         }
     }
 
-    // 转换线段覆盖区域下的瓦片 - 修复覆盖不全问题
+    // 转换线段覆盖区域下的瓦片
     void ConvertTilesUnderSegment()
     {
         // 获取线段的方向（垂直于移动方向）
@@ -239,7 +286,6 @@ public class ImprovedLineSegmentController : MonoBehaviour
     }
 
     // 转换指定位置的瓦片
-    // 转换指定位置的瓦片 - 修改为无论原地图是什么都变成新地图
     void ConvertTileAtPosition(Vector3Int cellPosition)
     {
         // 检查所有可能的原地图瓦片，无论是什么都转换为新地图
@@ -253,13 +299,10 @@ public class ImprovedLineSegmentController : MonoBehaviour
             forestTilemap.RefreshTile(cellPosition);
         }
 
-        // 检查沙漠地图是否有瓦片（如果需要也可以转换）
+        // 检查沙漠地图是否有瓦片
         if (desertTilemap.HasTile(cellPosition))
         {
             hasAnyTile = true;
-            // 如果希望保留沙漠瓦片，可以注释掉下面两行
-            // desertTilemap.SetTile(cellPosition, null);
-            // desertTilemap.RefreshTile(cellPosition);
         }
 
         // 无论原地图是什么，都设置为新地图（沙漠）
@@ -267,19 +310,10 @@ public class ImprovedLineSegmentController : MonoBehaviour
         desertTilemap.RefreshTile(cellPosition);
     }
 
-    // 重置线段状态
-    void ResetSegment()
-    {
-        currentState = SegmentState.Waiting;
-        segmentPosition = Vector3.zero;
-        lineRenderer.enabled = false;
-        Debug.Log("线段已重置，点击屏幕中心创建新线段");
-    }
-
     // 可视化调试
     void OnDrawGizmos()
     {
-        if (currentState == SegmentState.Moving)
+        if (currentState == SegmentState.Moving || currentState == SegmentState.Placed)
         {
             // 显示线段
             Gizmos.color = Color.green;
@@ -287,13 +321,16 @@ public class ImprovedLineSegmentController : MonoBehaviour
             Vector3 end = segmentPosition + segmentDirection * segmentLength * 0.5f;
             Gizmos.DrawLine(start, end);
 
-            // 显示移动方向
-            Gizmos.color = Color.red;
-            Gizmos.DrawRay(segmentPosition, moveDirection * 2f);
+            // 显示移动方向（仅在移动状态下）
+            if (currentState == SegmentState.Moving)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawRay(segmentPosition, moveDirection * 2f);
+            }
 
             // 显示覆盖区域
             Gizmos.color = new Color(1, 0, 0, 0.2f);
-            Vector3 perpendicular = moveDirection.normalized;
+            Vector3 perpendicular = (currentState == SegmentState.Moving) ? moveDirection.normalized : Vector3.up;
             Vector3 c1 = start - perpendicular * segmentWidth * 0.5f;
             Vector3 c2 = start + perpendicular * segmentWidth * 0.5f;
             Vector3 c3 = end + perpendicular * segmentWidth * 0.5f;
@@ -317,20 +354,20 @@ public class ImprovedLineSegmentController : MonoBehaviour
         switch (currentState)
         {
             case SegmentState.Waiting:
-                stateText = "状态: 等待中 - 点击屏幕中心创建线段";
+                stateText = "状态: 等待中 - 点击按钮创建线段";
                 break;
             case SegmentState.Placed:
-                stateText = "状态: 已放置 - 点击鼠标确定移动方向";
+                stateText = "状态: 已放置 - 移动鼠标旋转线段，点击屏幕设置移动方向";
                 break;
             case SegmentState.Moving:
                 stateText = "状态: 移动中 - 线段正在转换瓦片";
                 break;
             case SegmentState.Finished:
-                stateText = "状态: 已完成 - 点击屏幕重新开始";
+                stateText = "状态: 已完成 - 按钮已可用，点击按钮创建新线段";
                 break;
         }
 
-        GUI.Label(new Rect(10, 10, 500, 30), stateText, style);
+        GUI.Label(new Rect(10, 10, 600, 30), stateText, style);
 
         if (currentState == SegmentState.Moving)
         {
