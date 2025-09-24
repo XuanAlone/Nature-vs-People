@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections;
 
 public class PlayerCard : MonoBehaviour
@@ -18,11 +19,12 @@ public class PlayerCard : MonoBehaviour
     private Enemy currentTarget;
     private float attackTimer = 0f;
     private Button deployButton;
+    private Vector3 originalPosition;
 
     public enum CardState
     {
-        ReadyToSpawn,   // 准备生成（显示在按钮上）
-        Spawned,        // 已生成在中心（等待部署）
+        ReadyToSpawn,   // 准备生成
+        Spawned,        // 已生成在中心（等待点击设置方向）
         Deployed,       // 已部署（移动中）
         Attacking,      // 攻击中
         Dead            // 死亡
@@ -30,7 +32,6 @@ public class PlayerCard : MonoBehaviour
 
     void Start()
     {
-        // 初始状态为准备生成
         currentState = CardState.ReadyToSpawn;
 
         // 查找部署按钮
@@ -43,10 +44,12 @@ public class PlayerCard : MonoBehaviour
 
     void Update()
     {
+        HandleMouseInput();
+
         switch (currentState)
         {
             case CardState.Spawned:
-                HandleAiming();
+                UpdateCardDirectionToMouse();
                 break;
 
             case CardState.Deployed:
@@ -62,6 +65,37 @@ public class PlayerCard : MonoBehaviour
         }
     }
 
+    // 处理鼠标输入 - 仿照线段控制器的逻辑
+    void HandleMouseInput()
+    {
+        if (Input.GetMouseButtonDown(0) && !IsPointerOverUI())
+        {
+            switch (currentState)
+            {
+                case CardState.Spawned:
+                    // 在已生成状态下点击：确定移动方向并开始移动
+                    SetMovementDirection();
+                    currentState = CardState.Deployed;
+                    originalPosition = transform.position; // 记录起始位置
+                    break;
+
+                case CardState.ReadyToSpawn:
+                    // 如果卡牌还没生成，但玩家点击了屏幕，也尝试生成
+                    if (deployButton != null && deployButton.interactable)
+                    {
+                        OnDeployButtonClicked();
+                    }
+                    break;
+            }
+        }
+    }
+
+    // 检查鼠标是否在UI上
+    bool IsPointerOverUI()
+    {
+        return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+    }
+
     // 从卡牌管理器调用这个方法
     public void SpawnAtCenter()
     {
@@ -70,18 +104,23 @@ public class PlayerCard : MonoBehaviour
             transform.position = Vector3.zero;
             currentState = CardState.Spawned;
 
-            // 显示卡牌（如果之前是隐藏的）
+            // 显示卡牌
             GetComponent<SpriteRenderer>().enabled = true;
+
+            Debug.Log("卡牌已生成，请点击屏幕设置移动方向");
         }
     }
 
-    void HandleAiming()
+    // 更新卡牌方向以跟随鼠标 - 仿照线段控制器的逻辑
+    void UpdateCardDirectionToMouse()
     {
-        // 让卡牌朝向鼠标
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mousePos.z = 0;
-        targetDirection = (mousePos - transform.position).normalized;
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mouseWorldPos.z = 0;
 
+        // 获取从卡牌指向鼠标的方向
+        targetDirection = (mouseWorldPos - transform.position).normalized;
+
+        // 设置卡牌朝向
         if (targetDirection != Vector3.zero)
         {
             float angle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg;
@@ -89,29 +128,38 @@ public class PlayerCard : MonoBehaviour
         }
     }
 
-    void OnDeployButtonClicked()
+    // 设置移动方向 - 仿照线段控制器的逻辑
+    void SetMovementDirection()
     {
-        if (currentState == CardState.Spawned)
-        {
-            DeployCard();
-        }
-        else if (currentState == CardState.ReadyToSpawn)
-        {
-            SpawnAtCenter();
-        }
-    }
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mouseWorldPos.z = 0;
 
-    public void DeployCard()
-    {
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mousePos.z = 0;
-        targetDirection = (mousePos - transform.position).normalized;
+        // 移动方向是从卡牌指向鼠标位置
+        targetDirection = (mouseWorldPos - transform.position).normalized;
 
-        currentState = CardState.Deployed;
+        // 确保移动方向是单位向量
+        targetDirection.Normalize();
 
         // 设置最终朝向
         float angle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
+        Debug.Log("移动方向已设置，卡牌开始移动");
+    }
+
+    void OnDeployButtonClicked()
+    {
+        if (currentState == CardState.ReadyToSpawn)
+        {
+            SpawnAtCenter();
+        }
+        // 移除了在Spawned状态下点击按钮部署的逻辑，现在通过鼠标点击部署
+    }
+
+    public void DeployCard()
+    {
+        // 这个方法现在由鼠标点击触发，不是按钮
+        currentState = CardState.Deployed;
     }
 
     void MoveForward()
@@ -145,7 +193,7 @@ public class PlayerCard : MonoBehaviour
 
         // 检查敌人是否在攻击范围内
         float distanceToTarget = Vector3.Distance(transform.position, currentTarget.transform.position);
-        if (distanceToTarget > detectionRange * 1.5f) // 稍微扩大范围，避免频繁切换状态
+        if (distanceToTarget > detectionRange * 1.5f)
         {
             currentState = CardState.Deployed;
             currentTarget = null;
@@ -201,5 +249,12 @@ public class PlayerCard : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, detectionRange);
+
+        // 显示移动方向
+        if (Application.isPlaying && currentState == CardState.Deployed)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawRay(transform.position, targetDirection * 2f);
+        }
     }
 }

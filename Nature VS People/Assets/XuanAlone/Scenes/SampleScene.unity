@@ -32571,6 +32571,10 @@ MonoBehaviour:
   enemyPrefab: {fileID: 4635224121423445379, guid: ed679429acb164046b5dc9e325036a43, type: 3}
   spawnInterval: 3
   spawnDistanceFromEdge: 1
+  originalTilemap: {fileID: 0}
+  convertedTilemap: {fileID: 0}
+  originalTile: {fileID: 0}
+  convertedTile: {fileID: 0}
 --- !u!4 &1736633779
 Transform:
   m_ObjectHideFlags: 0
@@ -33025,7 +33029,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1923565232}
-  - component: {fileID: 1923565231}
   - component: {fileID: 1923565230}
   m_Layer: 0
   m_Name: CardManager
@@ -33049,21 +33052,6 @@ MonoBehaviour:
   cardPrefab: {fileID: 7806327605090862949, guid: 64d67e9d4ca11614c8b556958e945369, type: 3}
   deployButton: {fileID: 1654310787}
   maxCards: 5
---- !u!114 &1923565231
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1923565229}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc93a2d369fa76e46b1fc0f3cbf2805b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 4635224121423445379, guid: ed679429acb164046b5dc9e325036a43, type: 3}
-  spawnInterval: 3
-  spawnDistanceFromEdge: 1
 --- !u!4 &1923565232
 Transform:
   m_ObjectHideFlags: 0

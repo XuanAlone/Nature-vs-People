@@ -13,13 +13,12 @@ public class CardManager : MonoBehaviour
 
     void Start()
     {
-        // 初始化卡牌池
         InitializeCardPool();
 
         if (deployButton != null)
         {
             deployButton.onClick.AddListener(OnDeployButtonClicked);
-            UpdateButtonText();
+            UpdateButtonState();
         }
     }
 
@@ -29,7 +28,7 @@ public class CardManager : MonoBehaviour
         {
             GameObject cardObj = Instantiate(cardPrefab, Vector3.zero, Quaternion.identity);
             PlayerCard card = cardObj.GetComponent<PlayerCard>();
-            card.GetComponent<SpriteRenderer>().enabled = false; // 初始隐藏
+            card.GetComponent<SpriteRenderer>().enabled = false;
             availableCards.Add(card);
         }
     }
@@ -38,57 +37,80 @@ public class CardManager : MonoBehaviour
     {
         if (currentSelectedCard == null)
         {
-            // 选择一张卡牌生成在中心
             SelectCardForDeployment();
-        }
-        else
-        {
-            // 部署已生成的卡牌
-            DeploySelectedCard();
         }
     }
 
     void SelectCardForDeployment()
     {
-        // 查找可用的卡牌
         foreach (PlayerCard card in availableCards)
         {
             if (card.currentState == PlayerCard.CardState.ReadyToSpawn)
             {
                 currentSelectedCard = card;
                 card.SpawnAtCenter();
-                UpdateButtonText();
+
+                // 卡牌生成后，禁用按钮直到卡牌被部署或销毁
+                if (deployButton != null)
+                {
+                    deployButton.interactable = false;
+                }
+
+                UpdateButtonState();
                 break;
             }
         }
     }
 
-    void DeploySelectedCard()
+    void Update()
     {
-        if (currentSelectedCard != null && currentSelectedCard.currentState == PlayerCard.CardState.Spawned)
+        // 监听卡牌状态变化，当卡牌被部署或销毁后重新激活按钮
+        if (currentSelectedCard != null &&
+            (currentSelectedCard.currentState == PlayerCard.CardState.Deployed ||
+             currentSelectedCard.currentState == PlayerCard.CardState.Dead))
         {
-            currentSelectedCard.DeployCard();
             currentSelectedCard = null;
-            UpdateButtonText();
+            if (deployButton != null)
+            {
+                deployButton.interactable = true;
+            }
+            UpdateButtonState();
+        }
+
+        // 更新按钮状态
+        UpdateButtonState();
+    }
+
+    void UpdateButtonState()
+    {
+        if (deployButton == null) return;
+
+        Text buttonText = deployButton.GetComponentInChildren<Text>();
+        if (buttonText != null)
+        {
+            if (currentSelectedCard == null)
+            {
+                buttonText.text = "生成卡牌";
+                // 检查是否还有可用的卡牌
+                deployButton.interactable = HasAvailableCards();
+            }
+            else
+            {
+                buttonText.text = "卡牌已生成 - 点击屏幕部署";
+                deployButton.interactable = false;
+            }
         }
     }
 
-    void UpdateButtonText()
+    bool HasAvailableCards()
     {
-        if (deployButton != null)
+        foreach (PlayerCard card in availableCards)
         {
-            Text buttonText = deployButton.GetComponentInChildren<Text>();
-            if (buttonText != null)
+            if (card.currentState == PlayerCard.CardState.ReadyToSpawn)
             {
-                if (currentSelectedCard == null)
-                {
-                    buttonText.text = "生成卡牌";
-                }
-                else
-                {
-                    buttonText.text = "部署卡牌";
-                }
+                return true;
             }
         }
+        return false;
     }
 }

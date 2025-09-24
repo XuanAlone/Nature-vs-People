@@ -99,18 +99,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 3
-  moveSpeed: 0.5
+  moveSpeed: 0.2
   attackPower: 1
   attackRate: 3
   stayDuration: 0.5
-  targetTiles:
-  - {fileID: 11400000, guid: 5b1a78eed6158cd44bb75a7b0b8dff6c, type: 2}
-  - {fileID: 11400000, guid: 259bc7f6900f81f45af77d1bb5bf9184, type: 2}
-  - {fileID: 11400000, guid: 8dc7fe49d60d0a743b8f846c71506cf4, type: 2}
+  originalTilemap: {fileID: 0}
+  convertedTilemap: {fileID: 0}
+  originalTile: {fileID: 11400000, guid: 259bc7f6900f81f45af77d1bb5bf9184, type: 2}
   convertedTile: {fileID: 11400000, guid: 2ebe95e159c05ca4f9f2231bf37cb3b0, type: 2}
-  tilemapLayers:
-  - None
-  spawnPadding: 0
+  detectionRadius: 0.1
+  spawnPadding: 1
 --- !u!58 &5103663057151938823
 CircleCollider2D:
   m_ObjectHideFlags: 0
