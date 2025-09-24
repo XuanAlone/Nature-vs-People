@@ -12,10 +12,10 @@ public class ImprovedLineSegmentController : MonoBehaviour
     public Color lineColor = Color.red;  // 线段颜色
 
     [Header("地图设置")]
-    public Tilemap forestTilemap;
-    public Tilemap desertTilemap;
-    public TileBase forestTile;
-    public TileBase desertTile;
+    public Tilemap originalTilemap;      // 原来的瓦片地图（森林）
+    public Tilemap convertedTilemap;     // 变成的瓦片地图（沙漠）
+    public TileBase originalTile;        // 原来的瓦片（森林瓦片）
+    public TileBase convertedTile;       // 变成的瓦片（沙漠瓦片）
 
     [Header("UI设置")]
     public UnityEngine.UI.Button createSegmentButton; // 创建线段的按钮
@@ -108,7 +108,7 @@ public class ImprovedLineSegmentController : MonoBehaviour
             // 在屏幕中心创建线段
             CreateSegmentAtCenter();
             currentState = SegmentState.Placed;
-            Debug.Log("线段已创建，请移动鼠标旋转线段，然后点击屏幕设置移动方向");
+            //Debug.Log("线段已创建，请移动鼠标旋转线段，然后点击屏幕设置移动方向");
         }
     }
 
@@ -130,7 +130,7 @@ public class ImprovedLineSegmentController : MonoBehaviour
         segmentPosition = Vector3.zero;
         lineRenderer.enabled = false;
 
-        Debug.Log("线段已重置，请点击按钮创建新线段");
+        //Debug.Log("线段已重置，请点击按钮创建新线段");
     }
 
     // 在屏幕中心创建线段 - 确保线段可见
@@ -173,7 +173,7 @@ public class ImprovedLineSegmentController : MonoBehaviour
         // 确保移动方向是单位向量
         moveDirection.Normalize();
 
-        Debug.Log("移动方向已设置，线段开始移动");
+        //Debug.Log("移动方向已设置，线段开始移动");
     }
 
     // 更新线段视觉
@@ -203,7 +203,7 @@ public class ImprovedLineSegmentController : MonoBehaviour
             if (Vector3.Distance(segmentPosition, originalPosition) > moveDistance)
             {
                 currentState = SegmentState.Finished;
-                Debug.Log("线段移动完成，按钮已恢复可用");
+                //Debug.Log("线段移动完成，按钮已恢复可用");
             }
         }
     }
@@ -229,8 +229,8 @@ public class ImprovedLineSegmentController : MonoBehaviour
         float maxY = Mathf.Max(corner1.y, corner2.y, corner3.y, corner4.y);
 
         // 将世界坐标转换为网格坐标
-        Vector3Int minCell = forestTilemap.WorldToCell(new Vector3(minX, minY, 0));
-        Vector3Int maxCell = forestTilemap.WorldToCell(new Vector3(maxX, maxY, 0));
+        Vector3Int minCell = originalTilemap.WorldToCell(new Vector3(minX, minY, 0));
+        Vector3Int maxCell = originalTilemap.WorldToCell(new Vector3(maxX, maxY, 0));
 
         // 遍历矩形区域内的所有网格
         for (int x = minCell.x; x <= maxCell.x; x++)
@@ -252,7 +252,7 @@ public class ImprovedLineSegmentController : MonoBehaviour
     bool IsCellInSegmentArea(Vector3Int cellPos, Vector3 c1, Vector3 c2, Vector3 c3, Vector3 c4)
     {
         // 获取网格的中心世界坐标
-        Vector3 worldPos = forestTilemap.GetCellCenterWorld(cellPos);
+        Vector3 worldPos = originalTilemap.GetCellCenterWorld(cellPos);
 
         // 使用点积法判断点是否在凸四边形内
         return IsPointInQuadrilateral(worldPos, c1, c2, c3, c4);
@@ -285,29 +285,23 @@ public class ImprovedLineSegmentController : MonoBehaviour
         return (u >= 0) && (v >= 0) && (u + v < 1);
     }
 
-    // 转换指定位置的瓦片
+    // 转换指定位置的瓦片 - 只在原来的瓦片存在的位置上变化
     void ConvertTileAtPosition(Vector3Int cellPosition)
     {
-        // 检查所有可能的原地图瓦片，无论是什么都转换为新地图
-        bool hasAnyTile = false;
-
-        // 检查森林地图是否有瓦片
-        if (forestTilemap.HasTile(cellPosition))
+        // 检查原来的瓦片地图是否有瓦片
+        if (originalTilemap.HasTile(cellPosition))
         {
-            hasAnyTile = true;
-            forestTilemap.SetTile(cellPosition, null);
-            forestTilemap.RefreshTile(cellPosition);
-        }
+            // 移除原来的瓦片
+            originalTilemap.SetTile(cellPosition, null);
+            originalTilemap.RefreshTile(cellPosition);
 
-        // 检查沙漠地图是否有瓦片
-        if (desertTilemap.HasTile(cellPosition))
-        {
-            hasAnyTile = true;
-        }
+            // 在变成的瓦片地图上设置新瓦片
+            convertedTilemap.SetTile(cellPosition, convertedTile);
+            convertedTilemap.RefreshTile(cellPosition);
 
-        // 无论原地图是什么，都设置为新地图（沙漠）
-        desertTilemap.SetTile(cellPosition, desertTile);
-        desertTilemap.RefreshTile(cellPosition);
+            //Debug.Log($"转换瓦片位置: {cellPosition}");
+        }
+        // 如果原来的瓦片地图没有瓦片，就不做任何操作
     }
 
     // 可视化调试
@@ -354,16 +348,16 @@ public class ImprovedLineSegmentController : MonoBehaviour
         switch (currentState)
         {
             case SegmentState.Waiting:
-                stateText = "状态: 等待中 - 点击按钮创建线段";
+                //stateText = "状态: 等待中 - 点击按钮创建线段";
                 break;
             case SegmentState.Placed:
-                stateText = "状态: 已放置 - 移动鼠标旋转线段，点击屏幕设置移动方向";
+                //stateText = "状态: 已放置 - 移动鼠标旋转线段，点击屏幕设置移动方向";
                 break;
             case SegmentState.Moving:
-                stateText = "状态: 移动中 - 线段正在转换瓦片";
+                //stateText = "状态: 移动中 - 线段正在转换瓦片";
                 break;
             case SegmentState.Finished:
-                stateText = "状态: 已完成 - 按钮已可用，点击按钮创建新线段";
+                //stateText = "状态: 已完成 - 按钮已可用，点击按钮创建新线段";
                 break;
         }
 
