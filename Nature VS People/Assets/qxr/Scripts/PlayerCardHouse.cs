@@ -157,19 +157,12 @@ public class PlayerCardHouse : MonoBehaviour
     void Start()
     {
         BtnToAddWater();
-        BtnToAddWater();
-        BtnToAddWater();
-        BtnToAddWater();
-        BtnToAddWater();
-        BtnToAddWater();
-        BtnToAddWater();
-        BtnToAddWater();
-        BtnToAddWater();
-        BtnToAddWater();
-        BtnToAddWater();
-        
-
-        
+        BtnToAddWind();
+        BtnToCardDian();
+        BtnToCardSoil();
+        BenToCardSun();
+        BtnToCardMouse();
+        BtnToCardTiger();
     }
 
     // Update is called once per frame
