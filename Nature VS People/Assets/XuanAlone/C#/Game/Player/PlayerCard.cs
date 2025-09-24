@@ -21,6 +21,13 @@ public class PlayerCard : MonoBehaviour
     private Button deployButton;
     private Vector3 originalPosition;
 
+
+    private CardManager cardManager;
+
+    public void SetCardManager(CardManager manager)
+    {
+        cardManager = manager;
+    }
     public enum CardState
     {
         ReadyToSpawn,   // 准备生成
@@ -160,6 +167,12 @@ public class PlayerCard : MonoBehaviour
     {
         // 这个方法现在由鼠标点击触发，不是按钮
         currentState = CardState.Deployed;
+
+        // 通知CardManager卡牌状态改变
+        if (cardManager != null)
+        {
+            cardManager.OnCardStateChanged(this);
+        }
     }
 
     void MoveForward()
@@ -242,6 +255,10 @@ public class PlayerCard : MonoBehaviour
     void Die()
     {
         currentState = CardState.Dead;
+        if (cardManager != null)
+        {
+            cardManager.OnCardStateChanged(this);
+        }
         Destroy(gameObject);
     }
 
@@ -257,4 +274,6 @@ public class PlayerCard : MonoBehaviour
             Gizmos.DrawRay(transform.position, targetDirection * 2f);
         }
     }
+
+
 }
