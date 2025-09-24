@@ -10,6 +10,12 @@ public class CDcard : MonoBehaviour
 
     public GameObject CD10;
     public GameObject CD5;
+
+    //public void Cdfinish(thisCard)
+    //{//
+    //    thisCard.GetComponent<CardDisplay>().PlayButton.SetActive(true);
+    //    thisCard.GetComponent<CardDisplay>().CDImage.SetActive(false);
+    //}
     public void CDCard()
 
     {
@@ -23,6 +29,7 @@ public class CDcard : MonoBehaviour
                 thisCard.GetComponent<CardDisplay>().card = theCard;
                 thisCard.GetComponent<CardDisplay>().PlayButton.SetActive(false);
                 thisCard.GetComponent<CardDisplay>().CDImage.SetActive(true);
+                //invoke(cdFinish)
                 
             }
             if (card is CardWater)
