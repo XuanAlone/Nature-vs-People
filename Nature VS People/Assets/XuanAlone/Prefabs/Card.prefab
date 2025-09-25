@@ -1512,6 +1512,8 @@ GameObject:
   - component: {fileID: 2770891371893225983}
   - component: {fileID: 7367766207326575786}
   - component: {fileID: 5789620666650585767}
+  - component: {fileID: 1370816481460280988}
+  - component: {fileID: 4546470998857291343}
   m_Layer: 5
   m_Name: PlayButton (2)
   m_TagString: Untagged
@@ -1632,6 +1634,50 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1370816481460280988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3792270876789155787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62f621fda9e27314792e371ade9f1d2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  segmentLength: 3
+  segmentWidth: 0.1
+  moveSpeed: 2
+  moveDistance: 10
+  lineColor: {r: 1, g: 0, b: 0, a: 1}
+  originalTilemap: {fileID: 0}
+  convertedTilemap: {fileID: 0}
+  originalTile: {fileID: 0}
+  convertedTile: {fileID: 0}
+  createSegmentButton: {fileID: 0}
+--- !u!114 &4546470998857291343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3792270876789155787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62f621fda9e27314792e371ade9f1d2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  segmentLength: 3
+  segmentWidth: 0.1
+  moveSpeed: 2
+  moveDistance: 10
+  lineColor: {r: 1, g: 0, b: 0, a: 1}
+  originalTilemap: {fileID: 0}
+  convertedTilemap: {fileID: 0}
+  originalTile: {fileID: 0}
+  convertedTile: {fileID: 0}
+  createSegmentButton: {fileID: 0}
 --- !u!1 &4193791310740544361
 GameObject:
   m_ObjectHideFlags: 0
@@ -1644,6 +1690,7 @@ GameObject:
   - component: {fileID: 2584761242955217318}
   - component: {fileID: 4826882685841930121}
   - component: {fileID: 4812162440814635528}
+  - component: {fileID: 6771759896551661203}
   m_Layer: 5
   m_Name: PlayButton (1)
   m_TagString: Untagged
@@ -1764,6 +1811,25 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &6771759896551661203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4193791310740544361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bb2b0bf0d86ae243a9c4848172966e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  segmentLength: 3
+  segmentWidth: 0.1
+  moveSpeed: 2
+  moveDistance: 10
+  lineColor: {r: 1, g: 0, b: 0, a: 1}
+  attackDamage: 50
+  createSegmentButton: {fileID: 4812162440814635528}
 --- !u!1 &4258494884415551973
 GameObject:
   m_ObjectHideFlags: 0
