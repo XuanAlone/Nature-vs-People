@@ -6,8 +6,11 @@ using UnityEngine.UI;
 
 public class CardDisplay : MonoBehaviour
 {
+
+    public ImprovedLineSegmentController improvedLineSegmentController;
     public GameObject CDImage;
     public GameObject PlayButton;
+    public Button  Button1;
     public GameObject DestoryCard;
     public GameObject CDreward;
 
@@ -42,6 +45,9 @@ public class CardDisplay : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        improvedLineSegmentController=FindObjectOfType<ImprovedLineSegmentController>();
+        
+        
         ShowCard();
     }
 
@@ -76,6 +82,12 @@ public class CardDisplay : MonoBehaviour
             cardName.text = card.cardName;
             cardStyle.text = card.cardStyle;
             cardEnergy.text = card.cardEnergy;
+            // 当按钮A被点击时，模拟按钮B也被点击
+            Button1.onClick.AddListener(() => {
+                // 这一行就是最直接的"按下按钮B"的代码
+                improvedLineSegmentController.createSegmentButton.onClick.Invoke();
+            });
+
 
         }
         if (card is CardWater)
@@ -122,6 +134,13 @@ public class CardDisplay : MonoBehaviour
             cardName.text = card.cardName;
             cardStyle.text = card.cardStyle;
             cardEnergy.text = card.cardEnergy;
+
+            // 当按钮A被点击时，模拟按钮B也被点击
+            Button1.onClick.AddListener(() => {
+                // 这一行就是最直接的"按下按钮B"的代码
+                improvedLineSegmentController.createSegmentButton.onClick.Invoke();
+            });
+
         }
         if (card is CardSun)
         {

@@ -43,7 +43,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -0.9447479, y: 3.5687103}
+  m_AnchoredPosition: {x: -0.9447632, y: 3.5687256}
   m_SizeDelta: {x: -141.11, y: -151.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3876642185721651580
@@ -96,8 +96,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2a078d5aab8434419ab0c0c3647d08f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  improvedLineSegmentController: {fileID: 0}
   CDImage: {fileID: 8933552545710418306}
   PlayButton: {fileID: 6931142458855982984}
+  Button1: {fileID: 217220281735644433}
   DestoryCard: {fileID: 33745092078261743}
   CDreward: {fileID: 1529011470035029814}
   cardName: {fileID: 558209205311956794}
@@ -450,6 +452,9 @@ MonoBehaviour:
   convertedTilemap: {fileID: 0}
   originalTile: {fileID: 11400000, guid: c1da8d0c3f100c04583210f86382b62b, type: 2}
   convertedTile: {fileID: 11400000, guid: f6e4b412bd30e684dbd57716dd32a2fd, type: 2}
+  originalTilemapName: ForestTilemap
+  convertedTilemapName: DesertTilemap
+  autoFindTilemaps: 0
   createSegmentButton: {fileID: 217220281735644433}
 --- !u!1 &4232679322931580317
 GameObject:
@@ -1802,6 +1807,9 @@ MonoBehaviour:
   convertedTilemap: {fileID: 0}
   originalTile: {fileID: 0}
   convertedTile: {fileID: 0}
+  originalTilemapName: ForestTilemap
+  convertedTilemapName: DesertTilemap
+  autoFindTilemaps: 1
   createSegmentButton: {fileID: 0}
 --- !u!1 &7205370675701811338
 GameObject:
@@ -2243,6 +2251,9 @@ MonoBehaviour:
   convertedTilemap: {fileID: 0}
   originalTile: {fileID: 11400000, guid: c1da8d0c3f100c04583210f86382b62b, type: 2}
   convertedTile: {fileID: 11400000, guid: 9ae49b852a601af47b92f4097e62a003, type: 2}
+  originalTilemapName: ForestTilemap
+  convertedTilemapName: DesertTilemap
+  autoFindTilemaps: 0
   createSegmentButton: {fileID: 8066068376580549432}
 --- !u!1 &8712340447865814458
 GameObject:
@@ -2819,6 +2830,9 @@ MonoBehaviour:
   convertedTilemap: {fileID: 0}
   originalTile: {fileID: 11400000, guid: 9ae49b852a601af47b92f4097e62a003, type: 2}
   convertedTile: {fileID: 11400000, guid: c1da8d0c3f100c04583210f86382b62b, type: 2}
+  originalTilemapName: ForestTilemap
+  convertedTilemapName: DesertTilemap
+  autoFindTilemaps: 0
   createSegmentButton: {fileID: 6892872272994780065}
 --- !u!114 &2265272877463860905
 MonoBehaviour:
@@ -2841,6 +2855,9 @@ MonoBehaviour:
   convertedTilemap: {fileID: 0}
   originalTile: {fileID: 11400000, guid: f6e4b412bd30e684dbd57716dd32a2fd, type: 2}
   convertedTile: {fileID: 11400000, guid: c1da8d0c3f100c04583210f86382b62b, type: 2}
+  originalTilemapName: ForestTilemap
+  convertedTilemapName: DesertTilemap
+  autoFindTilemaps: 1
   createSegmentButton: {fileID: 6892872272994780065}
 --- !u!114 &773534465058204903
 MonoBehaviour:
@@ -2863,6 +2880,9 @@ MonoBehaviour:
   convertedTilemap: {fileID: 0}
   originalTile: {fileID: 11400000, guid: 4a7d29ad22c37da4f9ee60e003b39cd3, type: 2}
   convertedTile: {fileID: 11400000, guid: c1da8d0c3f100c04583210f86382b62b, type: 2}
+  originalTilemapName: ForestTilemap
+  convertedTilemapName: DesertTilemap
+  autoFindTilemaps: 1
   createSegmentButton: {fileID: 6892872272994780065}
 --- !u!1 &9207237220047729827
 GameObject:
