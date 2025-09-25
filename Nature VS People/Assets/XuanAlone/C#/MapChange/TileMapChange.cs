@@ -12,10 +12,17 @@ public class ImprovedLineSegmentController : MonoBehaviour
     public Color lineColor = Color.red;  // 线段颜色
 
     [Header("地图设置")]
-    public Tilemap originalTilemap;      // 原来的瓦片地图（森林）
-    public Tilemap convertedTilemap;     // 变成的瓦片地图（沙漠）
+    [SerializeField] private Tilemap originalTilemap;      // 改为SerializeField
+    [SerializeField] private Tilemap convertedTilemap;     // 改为SerializeField
     public TileBase originalTile;        // 原来的瓦片（森林瓦片）
     public TileBase convertedTile;       // 变成的瓦片（沙漠瓦片）
+
+
+    [Header("Tilemap查找设置")]
+    public string originalTilemapName = "ForestTilemap";   // 原始瓦片地图名称
+    public string convertedTilemapName = "DesertTilemap";  // 转换后瓦片地图名称
+    public bool autoFindTilemaps = true;                   // 是否自动查找Tilemap
+
 
     [Header("UI设置")]
     public UnityEngine.UI.Button createSegmentButton; // 创建线段的按钮
@@ -31,6 +38,7 @@ public class ImprovedLineSegmentController : MonoBehaviour
 
     void Start()
     {
+        InitializeTilemaps(); // 初始化Tilemap引用
         InitializeLineRenderer();
 
         // 绑定按钮点击事件
@@ -39,6 +47,129 @@ public class ImprovedLineSegmentController : MonoBehaviour
             createSegmentButton.onClick.AddListener(OnCreateSegmentButtonClicked);
         }
     }
+
+    void InitializeTilemaps()
+    {
+        // 如果已经在Inspector中手动设置了Tilemap，则不需要自动查找
+        if (originalTilemap != null && convertedTilemap != null)
+        {
+            //Debug.Log("Tilemap引用已通过Inspector设置");
+            return;
+        }
+
+        if (!autoFindTilemaps)
+        {
+            Debug.LogWarning("自动查找Tilemap已禁用，请确保在Inspector中手动设置Tilemap引用");
+            return;
+        }
+
+        // 自动查找Tilemap
+        FindAndAssignTilemaps();
+    }
+
+
+    // 新增：查找并分配Tilemap
+    void FindAndAssignTilemaps()
+    {
+        // 方法1：通过名称查找
+        GameObject originalTilemapObj = GameObject.Find(originalTilemapName);
+        GameObject convertedTilemapObj = GameObject.Find(convertedTilemapName);
+
+        if (originalTilemapObj != null)
+        {
+            originalTilemap = originalTilemapObj.GetComponent<Tilemap>();
+            //Debug.Log($"找到原始Tilemap: {originalTilemapName}");
+        }
+        else
+        {
+            Debug.LogError($"未找到原始Tilemap: {originalTilemapName}");
+        }
+
+        if (convertedTilemapObj != null)
+        {
+            convertedTilemap = convertedTilemapObj.GetComponent<Tilemap>();
+            //Debug.Log($"找到转换Tilemap: {convertedTilemapName}");
+        }
+        else
+        {
+            Debug.LogError($"未找到转换Tilemap: {convertedTilemapName}");
+        }
+
+        // 方法2：如果方法1失败，尝试通过标签查找
+        if (originalTilemap == null)
+        {
+            GameObject[] tilemaps = GameObject.FindGameObjectsWithTag("Tilemap");
+            foreach (GameObject obj in tilemaps)
+            {
+                Tilemap tm = obj.GetComponent<Tilemap>();
+                if (tm != null && originalTilemap == null) // 简单的分配逻辑，可根据需要改进
+                {
+                    originalTilemap = tm;
+                    break;
+                }
+            }
+        }
+
+        // 方法3：查找所有Tilemap并尝试智能分配（更复杂的逻辑）
+        if (originalTilemap == null || convertedTilemap == null)
+        {
+            FindTilemapsAutomatically();
+        }
+    }
+
+    // 新增：自动查找Tilemap的备选方案
+    void FindTilemapsAutomatically()
+    {
+        Tilemap[] allTilemaps = FindObjectsOfType<Tilemap>();
+
+        if (allTilemaps.Length >= 2)
+        {
+            // 简单的逻辑：假设第一个是original，第二个是converted
+            // 你可以根据实际需求改进这个逻辑
+            if (originalTilemap == null) originalTilemap = allTilemaps[0];
+            if (convertedTilemap == null) convertedTilemap = allTilemaps[1];
+            //Debug.Log("通过自动查找分配了Tilemap");
+        }
+        else if (allTilemaps.Length == 1)
+        {
+            originalTilemap = allTilemaps[0];
+            Debug.LogWarning("只找到一个Tilemap，将使用同一个Tilemap进行转换");
+            convertedTilemap = originalTilemap;
+        }
+        else
+        {
+            Debug.LogError("场景中未找到任何Tilemap！");
+        }
+    }
+
+    // 新增：公共方法用于手动设置Tilemap（可以在其他脚本中调用）
+    public void SetTilemaps(Tilemap original, Tilemap converted)
+    {
+        originalTilemap = original;
+        convertedTilemap = converted;
+        //Debug.Log("Tilemap已通过代码设置");
+    }
+
+    // 新增：验证Tilemap引用是否有效
+    bool AreTilemapsValid()
+    {
+        if (originalTilemap == null)
+        {
+            Debug.LogError("原始Tilemap引用为空！");
+            return false;
+        }
+
+        if (convertedTilemap == null)
+        {
+            Debug.LogError("转换Tilemap引用为空！");
+            return false;
+        }
+
+        return true;
+    }
+
+
+
 
     void Update()
     {
@@ -58,14 +189,12 @@ public class ImprovedLineSegmentController : MonoBehaviour
     // 初始化线段渲染器 - 确保线段可见
     void InitializeLineRenderer()
     {
-        // 确保有LineRenderer组件
         lineRenderer = GetComponent<LineRenderer>();
         if (lineRenderer == null)
         {
             lineRenderer = gameObject.AddComponent<LineRenderer>();
         }
 
-        // 设置线段属性
         lineRenderer.startWidth = segmentWidth;
         lineRenderer.endWidth = segmentWidth;
         lineRenderer.positionCount = 2;
@@ -73,8 +202,6 @@ public class ImprovedLineSegmentController : MonoBehaviour
         lineRenderer.startColor = lineColor;
         lineRenderer.endColor = lineColor;
         lineRenderer.enabled = false;
-
-        // 确保线段在Tilemap上方显示
         lineRenderer.sortingOrder = 10;
     }
 
@@ -211,35 +338,31 @@ public class ImprovedLineSegmentController : MonoBehaviour
     // 转换线段覆盖区域下的瓦片
     void ConvertTilesUnderSegment()
     {
-        // 获取线段的方向（垂直于移动方向）
+        if (!AreTilemapsValid()) return; // 如果Tilemap无效，直接返回
+
+        // 原有的转换逻辑...
         Vector3 startPoint = segmentPosition - segmentDirection * segmentLength * 0.5f;
         Vector3 endPoint = segmentPosition + segmentDirection * segmentLength * 0.5f;
 
-        // 计算线段覆盖的矩形区域
         Vector3 perpendicular = moveDirection.normalized;
         Vector3 corner1 = startPoint - perpendicular * segmentWidth * 0.5f;
         Vector3 corner2 = startPoint + perpendicular * segmentWidth * 0.5f;
         Vector3 corner3 = endPoint + perpendicular * segmentWidth * 0.5f;
         Vector3 corner4 = endPoint - perpendicular * segmentWidth * 0.5f;
 
-        // 计算矩形的边界
         float minX = Mathf.Min(corner1.x, corner2.x, corner3.x, corner4.x);
         float maxX = Mathf.Max(corner1.x, corner2.x, corner3.x, corner4.x);
         float minY = Mathf.Min(corner1.y, corner2.y, corner3.y, corner4.y);
         float maxY = Mathf.Max(corner1.y, corner2.y, corner3.y, corner4.y);
 
-        // 将世界坐标转换为网格坐标
         Vector3Int minCell = originalTilemap.WorldToCell(new Vector3(minX, minY, 0));
         Vector3Int maxCell = originalTilemap.WorldToCell(new Vector3(maxX, maxY, 0));
 
-        // 遍历矩形区域内的所有网格
         for (int x = minCell.x; x <= maxCell.x; x++)
         {
             for (int y = minCell.y; y <= maxCell.y; y++)
             {
                 Vector3Int cellPos = new Vector3Int(x, y, 0);
-
-                // 检查这个网格是否在线段覆盖的矩形内
                 if (IsCellInSegmentArea(cellPos, corner1, corner2, corner3, corner4))
                 {
                     ConvertTileAtPosition(cellPos);
@@ -247,6 +370,7 @@ public class ImprovedLineSegmentController : MonoBehaviour
             }
         }
     }
+
 
     // 检查网格是否在线段覆盖的矩形区域内
     bool IsCellInSegmentArea(Vector3Int cellPos, Vector3 c1, Vector3 c2, Vector3 c3, Vector3 c4)
@@ -286,22 +410,19 @@ public class ImprovedLineSegmentController : MonoBehaviour
     }
 
     // 转换指定位置的瓦片 - 只在原来的瓦片存在的位置上变化
+    // 修改ConvertTileAtPosition方法，添加验证
     void ConvertTileAtPosition(Vector3Int cellPosition)
     {
-        // 检查原来的瓦片地图是否有瓦片
+        if (!AreTilemapsValid()) return;
+
         if (originalTilemap.HasTile(cellPosition))
         {
-            // 移除原来的瓦片
             originalTilemap.SetTile(cellPosition, null);
             originalTilemap.RefreshTile(cellPosition);
 
-            // 在变成的瓦片地图上设置新瓦片
             convertedTilemap.SetTile(cellPosition, convertedTile);
             convertedTilemap.RefreshTile(cellPosition);
-
-            //Debug.Log($"转换瓦片位置: {cellPosition}");
         }
-        // 如果原来的瓦片地图没有瓦片，就不做任何操作
     }
 
     // 可视化调试
