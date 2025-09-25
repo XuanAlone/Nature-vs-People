@@ -99,7 +99,7 @@ MonoBehaviour:
   improvedLineSegmentController: {fileID: 0}
   CDImage: {fileID: 8933552545710418306}
   PlayButton: {fileID: 6931142458855982984}
-  Button1: {fileID: 217220281735644433}
+  Button1: {fileID: 550945893484481537}
   DestoryCard: {fileID: 33745092078261743}
   CDreward: {fileID: 1529011470035029814}
   cardName: {fileID: 558209205311956794}
@@ -310,7 +310,6 @@ GameObject:
   - component: {fileID: 8068901261619653281}
   - component: {fileID: 2574884819027774552}
   - component: {fileID: 217220281735644433}
-  - component: {fileID: 9167924008304656764}
   m_Layer: 5
   m_Name: PlayButton (3)
   m_TagString: Untagged
@@ -431,31 +430,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &9167924008304656764
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3487073486859048184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62f621fda9e27314792e371ade9f1d2f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  segmentLength: 3
-  segmentWidth: 0.1
-  moveSpeed: 2
-  moveDistance: 10
-  lineColor: {r: 1, g: 0, b: 0, a: 1}
-  originalTilemap: {fileID: 0}
-  convertedTilemap: {fileID: 0}
-  originalTile: {fileID: 11400000, guid: c1da8d0c3f100c04583210f86382b62b, type: 2}
-  convertedTile: {fileID: 11400000, guid: f6e4b412bd30e684dbd57716dd32a2fd, type: 2}
-  originalTilemapName: ForestTilemap
-  convertedTilemapName: DesertTilemap
-  autoFindTilemaps: 0
-  createSegmentButton: {fileID: 217220281735644433}
 --- !u!1 &4232679322931580317
 GameObject:
   m_ObjectHideFlags: 0
@@ -1823,7 +1797,6 @@ GameObject:
   - component: {fileID: 2179181612174619700}
   - component: {fileID: 8159194638376577147}
   - component: {fileID: 4031854603846913592}
-  - component: {fileID: 2523131148482503810}
   m_Layer: 5
   m_Name: PlayButton (4)
   m_TagString: Untagged
@@ -1944,25 +1917,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &2523131148482503810
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7205370675701811338}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1bb2b0bf0d86ae243a9c4848172966e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  segmentLength: 3
-  segmentWidth: 0.1
-  moveSpeed: 2
-  moveDistance: 10
-  lineColor: {r: 1, g: 0, b: 0, a: 1}
-  attackDamage: 50
-  createSegmentButton: {fileID: 4031854603846913592}
 --- !u!1 &8508243860951185457
 GameObject:
   m_ObjectHideFlags: 0
@@ -2109,7 +2063,7 @@ GameObject:
   - component: {fileID: 7753455885058949082}
   - component: {fileID: 2022126232618150294}
   - component: {fileID: 8066068376580549432}
-  - component: {fileID: 8997320050814683262}
+  - component: {fileID: 537736601573428665}
   m_Layer: 5
   m_Name: PlayButton (2)
   m_TagString: Untagged
@@ -2230,7 +2184,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &8997320050814683262
+--- !u!114 &537736601573428665
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2253,7 +2207,7 @@ MonoBehaviour:
   convertedTile: {fileID: 11400000, guid: 9ae49b852a601af47b92f4097e62a003, type: 2}
   originalTilemapName: ForestTilemap
   convertedTilemapName: DesertTilemap
-  autoFindTilemaps: 0
+  autoFindTilemaps: 1
   createSegmentButton: {fileID: 8066068376580549432}
 --- !u!1 &8712340447865814458
 GameObject:
@@ -2686,9 +2640,6 @@ GameObject:
   - component: {fileID: 7404749689730281181}
   - component: {fileID: 2774316630086189456}
   - component: {fileID: 6892872272994780065}
-  - component: {fileID: 6163287907440086290}
-  - component: {fileID: 2265272877463860905}
-  - component: {fileID: 773534465058204903}
   m_Layer: 5
   m_Name: PlayButton (5)
   m_TagString: Untagged
@@ -2809,81 +2760,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &6163287907440086290
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9021551495686412094}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62f621fda9e27314792e371ade9f1d2f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  segmentLength: 3
-  segmentWidth: 0.1
-  moveSpeed: 2
-  moveDistance: 10
-  lineColor: {r: 1, g: 0, b: 0, a: 1}
-  originalTilemap: {fileID: 0}
-  convertedTilemap: {fileID: 0}
-  originalTile: {fileID: 11400000, guid: 9ae49b852a601af47b92f4097e62a003, type: 2}
-  convertedTile: {fileID: 11400000, guid: c1da8d0c3f100c04583210f86382b62b, type: 2}
-  originalTilemapName: ForestTilemap
-  convertedTilemapName: DesertTilemap
-  autoFindTilemaps: 0
-  createSegmentButton: {fileID: 6892872272994780065}
---- !u!114 &2265272877463860905
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9021551495686412094}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62f621fda9e27314792e371ade9f1d2f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  segmentLength: 3
-  segmentWidth: 0.1
-  moveSpeed: 2
-  moveDistance: 10
-  lineColor: {r: 1, g: 0, b: 0, a: 1}
-  originalTilemap: {fileID: 0}
-  convertedTilemap: {fileID: 0}
-  originalTile: {fileID: 11400000, guid: f6e4b412bd30e684dbd57716dd32a2fd, type: 2}
-  convertedTile: {fileID: 11400000, guid: c1da8d0c3f100c04583210f86382b62b, type: 2}
-  originalTilemapName: ForestTilemap
-  convertedTilemapName: DesertTilemap
-  autoFindTilemaps: 1
-  createSegmentButton: {fileID: 6892872272994780065}
---- !u!114 &773534465058204903
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9021551495686412094}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62f621fda9e27314792e371ade9f1d2f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  segmentLength: 3
-  segmentWidth: 0.1
-  moveSpeed: 2
-  moveDistance: 10
-  lineColor: {r: 1, g: 0, b: 0, a: 1}
-  originalTilemap: {fileID: 0}
-  convertedTilemap: {fileID: 0}
-  originalTile: {fileID: 11400000, guid: 4a7d29ad22c37da4f9ee60e003b39cd3, type: 2}
-  convertedTile: {fileID: 11400000, guid: c1da8d0c3f100c04583210f86382b62b, type: 2}
-  originalTilemapName: ForestTilemap
-  convertedTilemapName: DesertTilemap
-  autoFindTilemaps: 1
-  createSegmentButton: {fileID: 6892872272994780065}
 --- !u!1 &9207237220047729827
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class CardDisplay : MonoBehaviour
 {
-
+    public Button LogeButton;
     public ImprovedLineSegmentController improvedLineSegmentController;
     public GameObject CDImage;
     public GameObject PlayButton;
@@ -141,6 +141,7 @@ public class CardDisplay : MonoBehaviour
                 improvedLineSegmentController.createSegmentButton.onClick.Invoke();
             });
 
+
         }
         if (card is CardSun)
         {
@@ -217,7 +218,10 @@ public class CardDisplay : MonoBehaviour
 
 
             //逻辑
-
+            if (LogeButton is Button)
+            {
+                ButtonList.Instance.buttons.Add(LogeButton);
+            }
 
             HandToCDManager.Instance.CDcards.Add(theCard);
             Debug.Log("jiaru");

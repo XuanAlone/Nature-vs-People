@@ -156,13 +156,19 @@ public class PlayerCardHouse : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        BtnToAddWater();
+        
         BtnToAddWind();
-        BtnToCardDian();
-        BtnToCardSoil();
+        BtnToAddWind();
+        BtnToAddWind();
+        
+        
+        BenToCardSun();
+        BenToCardSun();
         BenToCardSun();
         BtnToCardMouse();
-        BtnToCardTiger();
+        BtnToCardMouse();
+        BtnToCardMouse();
+        
     }
 
     // Update is called once per frame

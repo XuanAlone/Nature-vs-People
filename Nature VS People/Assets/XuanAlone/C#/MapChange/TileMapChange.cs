@@ -36,8 +36,12 @@ public class ImprovedLineSegmentController : MonoBehaviour
     private LineRenderer lineRenderer;   // 线段渲染器
     private Vector3 originalPosition;    // 起始位置
 
+
+    
+
     void Start()
     {
+        
         InitializeTilemaps(); // 初始化Tilemap引用
         InitializeLineRenderer();
 
@@ -228,7 +232,7 @@ public class ImprovedLineSegmentController : MonoBehaviour
     }
 
     // 按钮点击事件处理
-    void OnCreateSegmentButtonClicked()
+    public void OnCreateSegmentButtonClicked()
     {
         if (currentState == SegmentState.Waiting || currentState == SegmentState.Finished)
         {
@@ -240,7 +244,7 @@ public class ImprovedLineSegmentController : MonoBehaviour
     }
 
     // 更新按钮的交互性
-    void UpdateButtonInteractivity()
+   public void UpdateButtonInteractivity()
     {
         if (createSegmentButton != null)
         {
